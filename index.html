@@ -21,7 +21,7 @@
     <div class="header-top">
       <div class="container">
         <div style="display:flex;align-items:center;gap:16px;">
-          <span><i class="fas fa-truck"></i> Free delivery on orders above Rs. 2,000</span>
+          <span><i class="fas fa-truck"></i> Avail discount above 2500</span>
           <span class="hidden" style="display:none;" id="topBarSep">|</span>
           <a href="#delivery" class="hidden" id="topBarDelivery"><i class="fas fa-map-marker-alt"></i> Delivery Areas</a>
         </div>
@@ -142,7 +142,7 @@
                 <span>Happy Customers</span>
               </div>
               <div class="hero-stat">
-                <strong>2 Hrs</strong>
+                <strong>30 min </strong>
                 <span>Fast Delivery</span>
               </div>
             </div>
@@ -158,14 +158,14 @@
             <span style="font-size:14px;font-weight:600;">Deliver to:</span>
             <select class="form-input" id="locationSelect" onchange="updateDeliveryCharges()" style="width:auto;padding:6px 32px 6px 10px;font-size:13px;">
               <option value="">Select Location</option>
-              <option value="karachi">Karachi</option>
-              <option value="lahore">Lahore</option>
-              <option value="islamabad">Islamabad</option>
-              <option value="rawalpindi">Rawalpindi</option>
-              <option value="peshawar">Peshawar</option>
-              <option value="quetta">Quetta</option>
-              <option value="multan">Multan</option>
-              <option value="faisalabad">Faisalabad</option>
+              <option value="Havelian">Karachi</option>
+              <option value="All Abbottabad">Lahore</option>
+              <option value="nawansher ">Islamabad</option>
+              <option value="bilal town">Rawalpindi</option>
+              <option value=",mandian">Peshawar</option>
+              <option value="dhamtour">Quetta</option>
+              <option value="jugian">Multan</option>
+              <option value="mirpur">Faisalabad</option>
             </select>
           </div>
           <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gray-600);">
@@ -381,12 +381,7 @@
           <p style="font-size:13px;line-height:1.6;margin-bottom:16px;">
             Pakistan's trusted online vegetable shop. Fresh, organic produce delivered to your doorstep.
           </p>
-          <div class="footer-social">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-whatsapp"></i></a>
-            <a href="#"><i class="fab fa-youtube"></i></a>
-          </div>
+          
         </div>
         <div>
           <h4>Quick Links</h4>
@@ -417,13 +412,13 @@
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 Sabzi Mandi. All rights reserved. | Made with <i class="fas fa-heart text-danger"></i> in Pakistan</p>
+        <p>&copy; 2026 Sabzi Mandi. All rights reserved. | Made with <i class="fas fa-heart text-danger"></i> in <a href="http://senexa.online">senexa </a></a></p>
       </div>
     </div>
   </footer>
 
   <!-- ============ WHATSAPP BUTTON ============ -->
-  <a href="https://wa.me/923001234567?text=Assalam%20o%20Alaikum!%20I%20want%20to%20order%20vegetables" 
+  <a href="https://wa.me/923167639965?text=Assalam%20o%20Alaikum!%20I%20want%20to%20order%20vegetables" 
      target="_blank" class="whatsapp-btn" title="Chat on WhatsApp">
     <i class="fab fa-whatsapp"></i>
   </a>
@@ -579,26 +574,48 @@
           </div>
 
           <!-- Easypaisa Form (shown when selected) -->
-          <div id="easypaisaForm" style="display:none;margin-top:16px;padding:16px;background:var(--gray-50);border-radius:var(--radius-sm);">
-            <div class="form-group">
-              <label>Easypaisa Account Number <span class="required">*</span></label>
-              <input type="tel" class="form-input" id="easypaisaNumber" placeholder="03XX XXXXXXX">
-              <span class="form-hint">Enter the mobile number linked to your Easypaisa account</span>
-            </div>
-            <div style="padding:10px;background:#e8f5e9;border-radius:var(--radius-sm);font-size:12px;color:var(--primary-dark);">
-              <i class="fas fa-info-circle"></i> You will receive a payment request on your Easypaisa app. Please approve it to complete the order.
-            </div>
-          </div>
+<div id="easypaisaForm" style="display:none;margin-top:16px;padding:16px;background:var(--gray-50);border-radius:var(--radius-sm);">
 
-          <div style="display:flex;gap:10px;margin-top:20px;">
-            <button class="btn btn-outline" onclick="goToStep(1)" style="flex:1;">
-              <i class="fas fa-arrow-left"></i> Back
-            </button>
-            <button class="btn btn-primary" onclick="goToConfirmStep()" style="flex:2;">
-              Review Order <i class="fas fa-arrow-right"></i>
-            </button>
-          </div>
-        </div>
+  <!-- Merchant Details -->
+  <div style="padding:12px;background:#e8f5e9;border-radius:var(--radius-sm);margin-bottom:15px;">
+    <p style="margin:0;font-weight:600;color:#1b5e20;">
+      Send Payment To:
+    </p>
+    <p style="margin:5px 0 0 0;">
+      <strong>Account Title:</strong> Hamza Yousaf
+    </p>
+    <p style="margin:0;">
+      <strong>Easypaisa Number:</strong> 
+      <span style="font-size:16px;font-weight:bold;color:#2e7d32;">
+        0345-1234567
+      </span>
+    </p>
+  </div>
+
+  <!-- Screenshot Upload -->
+  <div class="form-group">
+    <label>Upload Payment Screenshot <span class="required">*</span></label>
+    <input type="file" class="form-input" id="paymentScreenshot" accept="image/*">
+  </div>
+
+  <!-- Transaction ID -->
+  <div class="form-group" style="margin-top:12px;">
+    <label>Transaction ID <span class="required">*</span></label>
+    <input type="text" class="form-input" id="transactionId" placeholder="Enter Easypaisa Transaction ID">
+  </div>
+
+  <!-- Error Message -->
+  <div id="paymentError" style="color:red;margin-top:10px;display:none;"></div>
+
+  <!-- Proceed Button INSIDE Easypaisa -->
+  <button type="button" 
+          class="btn btn-primary" 
+          style="width:100%;margin-top:15px;"
+          onclick="submitEasypaisaPayment()">
+    Proceed Order
+  </button>
+
+</div>
 
         <!-- Step 3: Order Confirmation -->
         <div id="checkoutStep3" style="display:none;">
