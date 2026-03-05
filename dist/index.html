@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sabzi Mandi - Fresh vegetables delivered to your doorstep. Order online from Pakistan's trusted vegetable shop.">
+  <meta name="theme-color" content="#2e7d32">
+  <title>Sabzi Mandi - Fresh Vegetables Online | Taza Sabzi Ghar Tak</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥬</text></svg>">
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+
+  <!-- ============ TOAST CONTAINER ============ -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ============ HEADER ============ -->
+  <header class="header">
+    <!-- Top Bar -->
+    <div class="header-top">
+      <div class="container">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <span><i class="fas fa-truck"></i> Free delivery on orders above Rs. 2,000</span>
+          <span class="hidden" style="display:none;" id="topBarSep">|</span>
+          <a href="#delivery" class="hidden" id="topBarDelivery"><i class="fas fa-map-marker-alt"></i> Delivery Areas</a>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <a href="#" onclick="showView('about');return false;"><i class="fas fa-info-circle"></i> About Us</a>
+          <a href="#" onclick="showView('contact');return false;"><i class="fas fa-phone"></i> Contact</a>
+          <a href="/admin" target="_blank"><i class="fas fa-user-shield"></i> Admin</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Header -->
+    <div class="header-main">
+      <div class="container">
+        <button class="menu-toggle" onclick="toggleMobileMenu()">
+          <i class="fas fa-bars"></i>
+        </button>
+
+        <a href="#" class="logo" onclick="showView('home');return false;">
+          <div class="logo-icon">🥬</div>
+          <div class="logo-text">Sabzi<span>Mandi</span></div>
+        </a>
+
+        <div class="search-bar">
+          <input type="text" id="searchInput" placeholder="Search fresh vegetables..." oninput="handleSearch(this.value)" autocomplete="off">
+          <button onclick="handleSearch(document.getElementById('searchInput').value)">
+            <i class="fas fa-search"></i>
+          </button>
+        </div>
+
+        <div class="header-actions">
+          <button class="header-btn" id="authBtn" onclick="handleAuthClick()">
+            <i class="fas fa-user-circle"></i>
+            <span class="btn-text" id="authBtnText">Login</span>
+          </button>
+          <button class="header-btn" onclick="toggleCart()">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="badge" id="cartCount">0</span>
+            <span class="btn-text cart-total" id="cartTotalHeader">Rs. 0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Category Navigation -->
+    <nav class="category-nav">
+      <div class="container">
+        <ul id="categoryNav">
+          <li><a href="#" class="active" onclick="filterCategory('all');return false;">All Vegetables</a></li>
+          <li><a href="#" onclick="filterCategory('leafy');return false;">Leafy Greens</a></li>
+          <li><a href="#" onclick="filterCategory('root');return false;">Root Vegetables</a></li>
+          <li><a href="#" onclick="filterCategory('fruit');return false;">Fruit Vegetables</a></li>
+          <li><a href="#" onclick="filterCategory('exotic');return false;">Exotic / Imported</a></li>
+          <li><a href="#" onclick="filterCategory('herbs');return false;">Fresh Herbs</a></li>
+          <li><a href="#" onclick="filterCategory('seasonal');return false;">Seasonal Special</a></li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ============ CART SIDEBAR ============ -->
+  <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+  <aside class="cart-sidebar" id="cartSidebar">
+    <div class="cart-header">
+      <h3><i class="fas fa-shopping-basket"></i> Your Cart (<span id="cartItemCount">0</span>)</h3>
+      <button class="cart-close" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="cart-items" id="cartItems">
+      <div class="cart-empty" id="cartEmpty">
+        <i class="fas fa-shopping-basket"></i>
+        <p>Your cart is empty</p>
+        <small>Add fresh vegetables to get started!</small>
+      </div>
+    </div>
+    <div class="cart-footer" id="cartFooter" style="display:none;">
+      <div class="cart-summary">
+        <div class="cart-summary-row">
+          <span>Subtotal</span>
+          <span id="cartSubtotal">Rs. 0</span>
+        </div>
+        <div class="cart-summary-row">
+          <span>Delivery <small id="deliveryLocation"></small></span>
+          <span id="cartDelivery">Rs. 0</span>
+        </div>
+        <div class="cart-summary-row total">
+          <span>Total</span>
+          <span id="cartTotal">Rs. 0</span>
+        </div>
+      </div>
+      <button class="btn-checkout" onclick="openCheckout()">
+        <i class="fas fa-lock"></i> Proceed to Checkout
+      </button>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN CONTENT ============ -->
+  <main>
+
+    <!-- === HOME VIEW === -->
+    <div class="page-view active" id="view-home">
+
+      <!-- Hero Section -->
+      <section class="hero">
+        <div class="container">
+          <div class="hero-content">
+            <div class="hero-badge">
+              <i class="fas fa-leaf"></i> 100% Fresh & Organic
+            </div>
+            <h1>Taza Sabziyaan<br>Seedhi Aapke Ghar!</h1>
+            <p>Order fresh vegetables online from Sabzi Mandi. Same-day delivery across major cities. Farm-fresh quality at the best prices.</p>
+            <div class="hero-stats">
+              <div class="hero-stat">
+                <strong>50+</strong>
+                <span>Fresh Veggies</span>
+              </div>
+              <div class="hero-stat">
+                <strong>10K+</strong>
+                <span>Happy Customers</span>
+              </div>
+              <div class="hero-stat">
+                <strong>2 Hrs</strong>
+                <span>Fast Delivery</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Location Selector -->
+      <section style="background:var(--white);padding:12px 0;border-bottom:1px solid var(--gray-200);">
+        <div class="container flex-between" style="flex-wrap:wrap;gap:10px;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <i class="fas fa-map-marker-alt text-primary" style="font-size:18px;"></i>
+            <span style="font-size:14px;font-weight:600;">Deliver to:</span>
+            <select class="form-input" id="locationSelect" onchange="updateDeliveryCharges()" style="width:auto;padding:6px 32px 6px 10px;font-size:13px;">
+              <option value="">Select Location</option>
+              <option value="karachi">Karachi</option>
+              <option value="lahore">Lahore</option>
+              <option value="islamabad">Islamabad</option>
+              <option value="rawalpindi">Rawalpindi</option>
+              <option value="peshawar">Peshawar</option>
+              <option value="quetta">Quetta</option>
+              <option value="multan">Multan</option>
+              <option value="faisalabad">Faisalabad</option>
+            </select>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gray-600);">
+            <i class="fas fa-clock"></i> Delivery: Same day for orders before 2 PM
+          </div>
+        </div>
+      </section>
+
+      <!-- Products Section -->
+      <section class="section" style="padding-top:32px;">
+        <div class="container">
+          <div class="section-head">
+            <h2><i class="fas fa-carrot"></i> Fresh Vegetables <span class="count" id="productCount">0 items</span></h2>
+          </div>
+
+          <div class="filter-tabs" id="filterTabs">
+            <button class="filter-tab active" onclick="filterCategory('all')">All</button>
+            <button class="filter-tab" onclick="filterCategory('leafy')">🥬 Leafy</button>
+            <button class="filter-tab" onclick="filterCategory('root')">🥕 Root</button>
+            <button class="filter-tab" onclick="filterCategory('fruit')">🍅 Fruit Veg</button>
+            <button class="filter-tab" onclick="filterCategory('exotic')">🌶️ Exotic</button>
+            <button class="filter-tab" onclick="filterCategory('herbs')">🌿 Herbs</button>
+            <button class="filter-tab" onclick="filterCategory('seasonal')">🌽 Seasonal</button>
+          </div>
+
+          <div class="product-grid" id="productGrid">
+            <!-- Products rendered by JavaScript -->
+          </div>
+
+          <div id="noResults" class="hidden" style="text-align:center;padding:60px 20px;">
+            <i class="fas fa-search" style="font-size:48px;color:var(--gray-300);display:block;margin-bottom:16px;"></i>
+            <h3 style="color:var(--gray-600);margin-bottom:8px;">No vegetables found</h3>
+            <p style="color:var(--gray-500);font-size:14px;">Try searching with a different keyword</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Delivery Info Section -->
+      <section class="section" id="delivery" style="background:var(--white);">
+        <div class="container">
+          <div class="section-head">
+            <h2><i class="fas fa-truck"></i> Delivery Information</h2>
+          </div>
+          <div class="info-cards">
+            <div class="info-card">
+              <div class="icon-circle"><i class="fas fa-clock"></i></div>
+              <h3>Same Day Delivery</h3>
+              <p>Order before 2 PM for same-day delivery. We ensure your vegetables reach you fresh and on time.</p>
+            </div>
+            <div class="info-card">
+              <div class="icon-circle"><i class="fas fa-hand-holding-usd"></i></div>
+              <h3>Free Above Rs. 2,000</h3>
+              <p>Enjoy free delivery on all orders above Rs. 2,000. Standard delivery charges apply below this amount.</p>
+            </div>
+            <div class="info-card">
+              <div class="icon-circle"><i class="fas fa-shield-alt"></i></div>
+              <h3>Quality Guaranteed</h3>
+              <p>We guarantee 100% fresh vegetables. Not satisfied? Get a full refund or replacement.</p>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <h3 style="margin-bottom:16px;font-size:18px;"><i class="fas fa-map-marked-alt text-primary"></i> Delivery Charges by City</h3>
+            <table class="delivery-table" id="deliveryTable">
+              <thead>
+                <tr>
+                  <th>City</th>
+                  <th>Delivery Charges</th>
+                  <th>Free Delivery Above</th>
+                  <th>Estimated Time</th>
+                </tr>
+              </thead>
+              <tbody id="deliveryTableBody">
+                <!-- Populated by JavaScript -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- === ABOUT VIEW === -->
+    <div class="page-view" id="view-about">
+      <section class="section">
+        <div class="container">
+          <div class="section-head">
+            <h2><i class="fas fa-store"></i> About Sabzi Mandi</h2>
+          </div>
+          <div style="max-width:800px;">
+            <div style="background:var(--white);border-radius:var(--radius-md);padding:32px;box-shadow:var(--shadow-sm);">
+              <h3 style="font-size:20px;margin-bottom:16px;color:var(--primary);">Our Story</h3>
+              <p style="color:var(--gray-700);line-height:1.8;margin-bottom:16px;">
+                Sabzi Mandi was founded with a simple mission: to deliver the freshest vegetables straight from farms to your kitchen. 
+                We partner directly with local farmers across Pakistan to bring you quality produce at fair prices.
+              </p>
+              <p style="color:var(--gray-700);line-height:1.8;margin-bottom:24px;">
+                Our team carefully selects and inspects every vegetable before it reaches your doorstep. We believe in supporting 
+                local agriculture while making fresh, healthy food accessible to every household.
+              </p>
+              
+              <div class="info-cards">
+                <div class="info-card">
+                  <div class="icon-circle"><i class="fas fa-seedling"></i></div>
+                  <h3>Farm Fresh</h3>
+                  <p>Directly sourced from local farms, ensuring maximum freshness and nutrition.</p>
+                </div>
+                <div class="info-card">
+                  <div class="icon-circle"><i class="fas fa-users"></i></div>
+                  <h3>10,000+ Customers</h3>
+                  <p>Trusted by thousands of families across Pakistan for their daily vegetable needs.</p>
+                </div>
+                <div class="info-card">
+                  <div class="icon-circle"><i class="fas fa-heart"></i></div>
+                  <h3>Community First</h3>
+                  <p>We support local farmers and ensure they receive fair prices for their produce.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- === CONTACT VIEW === -->
+    <div class="page-view" id="view-contact">
+      <section class="section">
+        <div class="container">
+          <div class="section-head">
+            <h2><i class="fas fa-envelope"></i> Contact Us</h2>
+          </div>
+          <div class="info-cards" style="max-width:900px;">
+            <div class="info-card">
+              <div class="icon-circle"><i class="fas fa-phone-alt"></i></div>
+              <h3>Phone / WhatsApp</h3>
+              <p>+92 300 1234567</p>
+              <p style="margin-top:8px;">Mon - Sat: 8 AM - 10 PM</p>
+            </div>
+            <div class="info-card">
+              <div class="icon-circle"><i class="fas fa-envelope"></i></div>
+              <h3>Email</h3>
+              <p>order@sabzimandi.pk</p>
+              <p style="margin-top:8px;">We reply within 2 hours</p>
+            </div>
+            <div class="info-card">
+              <div class="icon-circle"><i class="fas fa-map-marker-alt"></i></div>
+              <h3>Head Office</h3>
+              <p>Sabzi Mandi Main Market</p>
+              <p>Karachi, Pakistan</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- === DASHBOARD VIEW === -->
+    <div class="page-view" id="view-dashboard">
+      <section class="section">
+        <div class="container">
+          <div class="section-head">
+            <h2><i class="fas fa-user"></i> My Account</h2>
+          </div>
+          <div class="dashboard" id="dashboardContent">
+            <div class="dashboard-sidebar">
+              <div class="dashboard-user">
+                <div class="avatar" id="dashAvatar">U</div>
+                <h4 id="dashName">User</h4>
+                <p id="dashEmail">user@email.com</p>
+              </div>
+              <nav class="dashboard-nav">
+                <a href="#" class="active" onclick="showDashTab('orders');return false;"><i class="fas fa-box"></i> My Orders</a>
+                <a href="#" onclick="showDashTab('profile');return false;"><i class="fas fa-user-edit"></i> Profile</a>
+                <a href="#" onclick="handleLogout();return false;"><i class="fas fa-sign-out-alt"></i> Logout</a>
+              </nav>
+            </div>
+            <div class="dashboard-content">
+              <div id="dashTab-orders">
+                <h3 style="margin-bottom:16px;">My Orders</h3>
+                <div id="userOrdersList">
+                  <p style="color:var(--gray-500);text-align:center;padding:40px;">No orders yet. Start shopping!</p>
+                </div>
+              </div>
+              <div id="dashTab-profile" style="display:none;">
+                <h3 style="margin-bottom:16px;">Profile Information</h3>
+                <div class="form-group">
+                  <label>Full Name</label>
+                  <input type="text" class="form-input" id="profileName" placeholder="Your name">
+                </div>
+                <div class="form-group">
+                  <label>Phone</label>
+                  <input type="tel" class="form-input" id="profilePhone" placeholder="03XX XXXXXXX">
+                </div>
+                <div class="form-group">
+                  <label>Email</label>
+                  <input type="email" class="form-input" id="profileEmail" placeholder="you@email.com">
+                </div>
+                <button class="btn btn-primary" onclick="updateProfile()">
+                  <i class="fas fa-save"></i> Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <h4><span style="font-size:20px;">🥬</span> Sabzi Mandi</h4>
+          <p style="font-size:13px;line-height:1.6;margin-bottom:16px;">
+            Pakistan's trusted online vegetable shop. Fresh, organic produce delivered to your doorstep.
+          </p>
+          <div class="footer-social">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-whatsapp"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+          </div>
+        </div>
+        <div>
+          <h4>Quick Links</h4>
+          <ul class="footer-links">
+            <li><a href="#" onclick="showView('home');return false;"><i class="fas fa-angle-right"></i> Shop Vegetables</a></li>
+            <li><a href="#" onclick="showView('about');return false;"><i class="fas fa-angle-right"></i> About Us</a></li>
+            <li><a href="#" onclick="showView('contact');return false;"><i class="fas fa-angle-right"></i> Contact</a></li>
+            <li><a href="#delivery"><i class="fas fa-angle-right"></i> Delivery Info</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Customer Service</h4>
+          <ul class="footer-links">
+            <li><a href="#"><i class="fas fa-angle-right"></i> Track Order</a></li>
+            <li><a href="#"><i class="fas fa-angle-right"></i> Return Policy</a></li>
+            <li><a href="#"><i class="fas fa-angle-right"></i> Privacy Policy</a></li>
+            <li><a href="#"><i class="fas fa-angle-right"></i> Terms & Conditions</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact Info</h4>
+          <ul class="footer-contact">
+            <li><i class="fas fa-phone"></i> <span>+92 300 1234567</span></li>
+            <li><i class="fas fa-envelope"></i> <span>order@sabzimandi.pk</span></li>
+            <li><i class="fas fa-map-marker-alt"></i> <span>Sabzi Mandi, Main Market, Karachi</span></li>
+            <li><i class="fas fa-clock"></i> <span>Mon - Sat: 8 AM - 10 PM</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Sabzi Mandi. All rights reserved. | Made with <i class="fas fa-heart text-danger"></i> in Pakistan</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ============ WHATSAPP BUTTON ============ -->
+  <a href="https://wa.me/923001234567?text=Assalam%20o%20Alaikum!%20I%20want%20to%20order%20vegetables" 
+     target="_blank" class="whatsapp-btn" title="Chat on WhatsApp">
+    <i class="fab fa-whatsapp"></i>
+  </a>
+
+  <!-- ============ AUTH MODAL ============ -->
+  <div class="modal-overlay" id="authModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="authModalTitle"><i class="fas fa-user-circle text-primary"></i> Login</h3>
+        <button class="modal-close" onclick="closeModal('authModal')"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <!-- Login Form -->
+        <div id="loginForm">
+          <div class="form-group">
+            <label>Phone Number <span class="required">*</span></label>
+            <input type="tel" class="form-input" id="loginPhone" placeholder="03XX XXXXXXX">
+          </div>
+          <div class="form-group">
+            <label>Password <span class="required">*</span></label>
+            <input type="password" class="form-input" id="loginPassword" placeholder="Enter your password">
+          </div>
+          <button class="btn btn-primary btn-block btn-lg" onclick="handleLogin()" style="margin-bottom:16px;">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </button>
+          <p style="text-align:center;font-size:13px;color:var(--gray-600);">
+            Don't have an account? 
+            <a href="#" onclick="toggleAuthForm('signup');return false;" style="color:var(--primary);font-weight:600;">Sign Up</a>
+          </p>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signupForm" style="display:none;">
+          <div class="form-group">
+            <label>Full Name <span class="required">*</span></label>
+            <input type="text" class="form-input" id="signupName" placeholder="Your full name">
+          </div>
+          <div class="form-group">
+            <label>Phone Number <span class="required">*</span></label>
+            <input type="tel" class="form-input" id="signupPhone" placeholder="03XX XXXXXXX">
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" class="form-input" id="signupEmail" placeholder="you@email.com (optional)">
+          </div>
+          <div class="form-group">
+            <label>Password <span class="required">*</span></label>
+            <input type="password" class="form-input" id="signupPassword" placeholder="Min 6 characters">
+          </div>
+          <button class="btn btn-primary btn-block btn-lg" onclick="handleSignup()" style="margin-bottom:16px;">
+            <i class="fas fa-user-plus"></i> Create Account
+          </button>
+          <p style="text-align:center;font-size:13px;color:var(--gray-600);">
+            Already have an account? 
+            <a href="#" onclick="toggleAuthForm('login');return false;" style="color:var(--primary);font-weight:600;">Login</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CHECKOUT MODAL ============ -->
+  <div class="modal-overlay" id="checkoutModal">
+    <div class="modal" style="max-width:600px;">
+      <div class="modal-header">
+        <h3><i class="fas fa-lock text-primary"></i> Checkout</h3>
+        <button class="modal-close" onclick="closeModal('checkoutModal')"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <!-- Checkout Steps Indicator -->
+        <div class="checkout-steps">
+          <div class="checkout-step active" id="step1">
+            <span class="step-num">1</span>
+            <span class="step-text">Details</span>
+          </div>
+          <div class="step-line" id="stepLine1"></div>
+          <div class="checkout-step" id="step2">
+            <span class="step-num">2</span>
+            <span class="step-text">Payment</span>
+          </div>
+          <div class="step-line" id="stepLine2"></div>
+          <div class="checkout-step" id="step3">
+            <span class="step-num">3</span>
+            <span class="step-text">Confirm</span>
+          </div>
+        </div>
+
+        <!-- Step 1: Customer Details -->
+        <div id="checkoutStep1">
+          <div class="form-group">
+            <label>Full Name <span class="required">*</span></label>
+            <input type="text" class="form-input" id="checkName" placeholder="Your full name">
+          </div>
+          <div class="form-group">
+            <label>Phone Number <span class="required">*</span></label>
+            <input type="tel" class="form-input" id="checkPhone" placeholder="03XX XXXXXXX">
+          </div>
+          <div class="form-group">
+            <label>Delivery City <span class="required">*</span></label>
+            <select class="form-input" id="checkCity">
+              <option value="">Select city</option>
+              <option value="karachi">Karachi</option>
+              <option value="lahore">Lahore</option>
+              <option value="islamabad">Islamabad</option>
+              <option value="rawalpindi">Rawalpindi</option>
+              <option value="peshawar">Peshawar</option>
+              <option value="quetta">Quetta</option>
+              <option value="multan">Multan</option>
+              <option value="faisalabad">Faisalabad</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Delivery Address <span class="required">*</span></label>
+            <textarea class="form-input" id="checkAddress" placeholder="Complete delivery address with area, street, house number" rows="3"></textarea>
+          </div>
+          <div class="form-group">
+            <label>Order Notes (Optional)</label>
+            <input type="text" class="form-input" id="checkNotes" placeholder="Any special instructions?">
+          </div>
+          <button class="btn btn-primary btn-block btn-lg" onclick="goToPaymentStep()">
+            Continue to Payment <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <!-- Step 2: Payment Method -->
+        <div id="checkoutStep2" style="display:none;">
+          <h4 style="margin-bottom:16px;font-weight:700;">Select Payment Method</h4>
+          
+          <div class="payment-options" id="paymentOptions">
+            <label class="payment-option selected" onclick="selectPayment('cod')">
+              <input type="radio" name="payment" value="cod" checked>
+              <span class="radio-circle"></span>
+              <div class="pay-icon" style="background:#fff3e0;color:var(--accent);">
+                <i class="fas fa-money-bill-wave"></i>
+              </div>
+              <div class="pay-info">
+                <h4>Cash on Delivery</h4>
+                <p>Pay when you receive your order</p>
+              </div>
+            </label>
+            
+            <label class="payment-option" onclick="selectPayment('easypaisa')">
+              <input type="radio" name="payment" value="easypaisa">
+              <span class="radio-circle"></span>
+              <div class="pay-icon" style="background:#e8f5e9;color:var(--primary);">
+                <i class="fas fa-mobile-alt"></i>
+              </div>
+              <div class="pay-info">
+                <h4>Easypaisa</h4>
+                <p>Pay securely via Easypaisa mobile wallet</p>
+              </div>
+            </label>
+          </div>
+
+          <!-- Easypaisa Form (shown when selected) -->
+          <div id="easypaisaForm" style="display:none;margin-top:16px;padding:16px;background:var(--gray-50);border-radius:var(--radius-sm);">
+            <div class="form-group">
+              <label>Easypaisa Account Number <span class="required">*</span></label>
+              <input type="tel" class="form-input" id="easypaisaNumber" placeholder="03XX XXXXXXX">
+              <span class="form-hint">Enter the mobile number linked to your Easypaisa account</span>
+            </div>
+            <div style="padding:10px;background:#e8f5e9;border-radius:var(--radius-sm);font-size:12px;color:var(--primary-dark);">
+              <i class="fas fa-info-circle"></i> You will receive a payment request on your Easypaisa app. Please approve it to complete the order.
+            </div>
+          </div>
+
+          <div style="display:flex;gap:10px;margin-top:20px;">
+            <button class="btn btn-outline" onclick="goToStep(1)" style="flex:1;">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button class="btn btn-primary" onclick="goToConfirmStep()" style="flex:2;">
+              Review Order <i class="fas fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Order Confirmation -->
+        <div id="checkoutStep3" style="display:none;">
+          <div style="background:var(--gray-50);border-radius:var(--radius-sm);padding:16px;margin-bottom:16px;">
+            <h4 style="margin-bottom:12px;font-size:14px;color:var(--gray-600);text-transform:uppercase;letter-spacing:.5px;">Order Summary</h4>
+            <div id="orderSummaryItems"></div>
+            <div style="border-top:2px solid var(--gray-300);margin-top:12px;padding-top:12px;">
+              <div class="cart-summary-row">
+                <span>Subtotal</span><span id="summarySubtotal">Rs. 0</span>
+              </div>
+              <div class="cart-summary-row">
+                <span>Delivery</span><span id="summaryDelivery">Rs. 0</span>
+              </div>
+              <div class="cart-summary-row total">
+                <span>Total</span><span id="summaryTotal">Rs. 0</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:var(--gray-50);border-radius:var(--radius-sm);padding:16px;margin-bottom:16px;">
+            <h4 style="margin-bottom:8px;font-size:14px;color:var(--gray-600);">Delivery Details</h4>
+            <p style="font-size:13px;" id="summaryCustomer"></p>
+            <p style="font-size:13px;" id="summaryAddress"></p>
+            <p style="font-size:13px;margin-top:4px;" id="summaryPayment"></p>
+          </div>
+
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-outline" onclick="goToStep(2)" style="flex:1;">
+              <i class="fas fa-arrow-left"></i> Back
+            </button>
+            <button class="btn btn-accent btn-lg" onclick="placeOrder()" style="flex:2;" id="placeOrderBtn">
+              <i class="fas fa-check-circle"></i> Place Order
+            </button>
+          </div>
+        </div>
+
+        <!-- Order Success -->
+        <div id="checkoutSuccess" style="display:none;text-align:center;padding:32px 0;">
+          <div style="width:80px;height:80px;background:var(--primary-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+            <i class="fas fa-check-circle" style="font-size:40px;color:var(--primary);"></i>
+          </div>
+          <h3 style="color:var(--primary);margin-bottom:8px;">Order Placed Successfully!</h3>
+          <p style="color:var(--gray-600);font-size:14px;margin-bottom:4px;">Order ID: <strong id="successOrderId"></strong></p>
+          <p style="color:var(--gray-500);font-size:13px;margin-bottom:24px;">You will receive a confirmation on WhatsApp shortly.</p>
+          <button class="btn btn-primary" onclick="closeModal('checkoutModal');showView('home');">
+            <i class="fas fa-shopping-basket"></i> Continue Shopping
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SCRIPTS ============ -->
+  <script src="./static/app.js"></script>
+</body>
+</html>
