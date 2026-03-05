@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Sabzi Mandi</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠️</text></svg>">
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer">
+</head>
+<body>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- ============ ADMIN LOGIN PAGE ============ -->
+  <div class="admin-login-page" id="adminLoginPage">
+    <div class="admin-login-card">
+      <div style="text-align:center;margin-bottom:20px;">
+        <div style="width:64px;height:64px;background:var(--primary);border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;">🛠️</div>
+      </div>
+      <h2>Admin Panel</h2>
+      <p>Sabzi Mandi Management Dashboard</p>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" class="form-input" id="adminUsername" placeholder="admin" value="admin">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" class="form-input" id="adminPassword" placeholder="Enter password" value="admin123"
+               onkeydown="if(event.key==='Enter')adminLogin()">
+      </div>
+      <button class="btn btn-primary btn-block btn-lg" onclick="adminLogin()" style="margin-bottom:12px;">
+        <i class="fas fa-sign-in-alt"></i> Login to Dashboard
+      </button>
+      <p style="text-align:center;font-size:12px;color:var(--gray-500);">
+        Demo credentials: <strong>admin</strong> / <strong>admin123</strong>
+      </p>
+      <div style="text-align:center;margin-top:16px;">
+        <a href="/" style="color:var(--primary);font-size:13px;"><i class="fas fa-arrow-left"></i> Back to Store</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ADMIN DASHBOARD ============ -->
+  <div class="admin-layout" id="adminDashboard" style="display:none;">
+    
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="admin-logo">
+        <i class="fas fa-leaf"></i>
+        <div>
+          <h2>Sabzi Mandi</h2>
+          <span>Admin Dashboard</span>
+        </div>
+      </div>
+      <nav class="admin-nav">
+        <div class="nav-label">Main</div>
+        <a href="#" class="active" onclick="showAdminSection('dashboard');return false;">
+          <i class="fas fa-chart-pie"></i> Dashboard
+        </a>
+        <a href="#" onclick="showAdminSection('vegetables');return false;">
+          <i class="fas fa-carrot"></i> Vegetables
+        </a>
+        <a href="#" onclick="showAdminSection('orders');return false;">
+          <i class="fas fa-box"></i> Orders
+        </a>
+        
+        <div class="nav-label">Settings</div>
+        <a href="#" onclick="showAdminSection('delivery');return false;">
+          <i class="fas fa-truck"></i> Delivery Charges
+        </a>
+        <a href="#" onclick="showAdminSection('settings');return false;">
+          <i class="fas fa-cog"></i> Settings
+        </a>
+
+        <div class="nav-label" style="margin-top:auto;"></div>
+        <a href="/" target="_blank">
+          <i class="fas fa-store"></i> View Store
+        </a>
+        <a href="#" onclick="adminLogout();return false;" style="color:#ef5350;">
+          <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+      <!-- Mobile Toggle -->
+      <button class="btn btn-sm" onclick="toggleAdminSidebar()" id="adminMobileToggle" 
+              style="display:none;margin-bottom:16px;background:var(--gray-200);">
+        <i class="fas fa-bars"></i> Menu
+      </button>
+
+      <!-- === DASHBOARD SECTION === -->
+      <div class="admin-section active" id="section-dashboard">
+        <div class="admin-header">
+          <h1>Dashboard Overview</h1>
+          <span style="font-size:13px;color:var(--gray-500);" id="adminDate"></span>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon green"><i class="fas fa-carrot"></i></div>
+            <div class="stat-info">
+              <h3 id="statVegetables">0</h3>
+              <p>Total Vegetables</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon orange"><i class="fas fa-box"></i></div>
+            <div class="stat-info">
+              <h3 id="statOrders">0</h3>
+              <p>Total Orders</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon blue"><i class="fas fa-rupee-sign"></i></div>
+            <div class="stat-info">
+              <h3 id="statRevenue">Rs. 0</h3>
+              <p>Total Revenue</p>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon red"><i class="fas fa-clock"></i></div>
+            <div class="stat-info">
+              <h3 id="statPending">0</h3>
+              <p>Pending Orders</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3><i class="fas fa-clock text-primary" style="margin-right:8px;"></i>Recent Orders</h3>
+            <button class="btn btn-sm btn-outline" onclick="showAdminSection('orders')">View All</button>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="admin-table" id="recentOrdersTable">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Items</th>
+                  <th>Total</th>
+                  <th>Payment</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="recentOrdersBody">
+                <tr><td colspan="6" style="text-align:center;padding:24px;color:var(--gray-500);">No orders yet</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- === VEGETABLES SECTION === -->
+      <div class="admin-section" id="section-vegetables">
+        <div class="admin-header">
+          <h1>Manage Vegetables</h1>
+          <button class="btn btn-primary" onclick="openVegModal()">
+            <i class="fas fa-plus"></i> Add Vegetable
+          </button>
+        </div>
+
+        <!-- Search & Filter -->
+        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;">
+          <div class="search-bar" style="max-width:300px;flex:1;">
+            <input type="text" id="adminVegSearch" placeholder="Search vegetables..." oninput="renderAdminVegetables()">
+            <button><i class="fas fa-search"></i></button>
+          </div>
+          <select class="form-input" id="adminVegFilter" style="width:auto;" onchange="renderAdminVegetables()">
+            <option value="all">All Categories</option>
+            <option value="leafy">Leafy Greens</option>
+            <option value="root">Root Vegetables</option>
+            <option value="fruit">Fruit Vegetables</option>
+            <option value="exotic">Exotic</option>
+            <option value="herbs">Herbs</option>
+            <option value="seasonal">Seasonal</option>
+          </select>
+        </div>
+
+        <div class="admin-card">
+          <div style="overflow-x:auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Vegetable</th>
+                  <th>Category</th>
+                  <th>Price (Rs.)</th>
+                  <th>Unit</th>
+                  <th>In Stock</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminVegTable">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- === ORDERS SECTION === -->
+      <div class="admin-section" id="section-orders">
+        <div class="admin-header">
+          <h1>Order Management</h1>
+          <div style="display:flex;gap:8px;">
+            <select class="form-input" id="orderStatusFilter" style="width:auto;" onchange="renderAdminOrders()">
+              <option value="all">All Orders</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="admin-card">
+          <div style="overflow-x:auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Customer</th>
+                  <th>Phone</th>
+                  <th>City</th>
+                  <th>Items</th>
+                  <th>Total</th>
+                  <th>Payment</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminOrdersBody">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- === DELIVERY SECTION === -->
+      <div class="admin-section" id="section-delivery">
+        <div class="admin-header">
+          <h1>Delivery Charges</h1>
+          <button class="btn btn-primary" onclick="saveDeliveryCharges()">
+            <i class="fas fa-save"></i> Save Changes
+          </button>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <h3><i class="fas fa-truck text-primary" style="margin-right:8px;"></i>City-wise Delivery Settings</h3>
+          </div>
+          <div style="overflow-x:auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>City</th>
+                  <th>Delivery Charge (Rs.)</th>
+                  <th>Free Delivery Above (Rs.)</th>
+                  <th>Estimated Time</th>
+                </tr>
+              </thead>
+              <tbody id="adminDeliveryTable">
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div style="margin-top:16px;padding:16px;background:var(--white);border-radius:var(--radius-md);box-shadow:var(--shadow-sm);">
+          <h4 style="margin-bottom:8px;"><i class="fas fa-info-circle text-primary"></i> Note</h4>
+          <p style="font-size:13px;color:var(--gray-600);">
+            Changes to delivery charges will reflect instantly on the customer-facing website. 
+            Customers will see updated charges in real-time.
+          </p>
+        </div>
+      </div>
+
+      <!-- === SETTINGS SECTION === -->
+      <div class="admin-section" id="section-settings">
+        <div class="admin-header">
+          <h1>Settings</h1>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-header"><h3>Store Information</h3></div>
+          <div style="padding:20px;">
+            <div class="form-group">
+              <label>Store Name</label>
+              <input type="text" class="form-input" value="Sabzi Mandi" id="settingStoreName">
+            </div>
+            <div class="form-group">
+              <label>WhatsApp Number</label>
+              <input type="tel" class="form-input" value="+923001234567" id="settingWhatsApp">
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" class="form-input" value="order@sabzimandi.pk" id="settingEmail">
+            </div>
+            <button class="btn btn-primary" onclick="showToast('Settings saved!','success')">
+              <i class="fas fa-save"></i> Save Settings
+            </button>
+          </div>
+        </div>
+
+        <div class="admin-card" style="margin-top:16px;">
+          <div class="admin-card-header"><h3>Data Management</h3></div>
+          <div style="padding:20px;display:flex;flex-wrap:wrap;gap:10px;">
+            <button class="btn btn-outline" onclick="resetVegetables()">
+              <i class="fas fa-sync"></i> Reset Vegetables to Default
+            </button>
+            <button class="btn btn-danger" onclick="clearAllOrders()">
+              <i class="fas fa-trash"></i> Clear All Orders
+            </button>
+          </div>
+        </div>
+
+        <div class="admin-card" style="margin-top:16px;">
+          <div class="admin-card-header"><h3>Easypaisa Configuration</h3></div>
+          <div style="padding:20px;">
+            <div class="form-group">
+              <label>Store ID</label>
+              <input type="text" class="form-input" placeholder="YOUR_EASYPAISA_STORE_ID" id="epStoreId">
+              <span class="form-hint">Get this from your Easypaisa merchant portal</span>
+            </div>
+            <div class="form-group">
+              <label>Merchant Username</label>
+              <input type="text" class="form-input" placeholder="Merchant API username" id="epUsername">
+            </div>
+            <div class="form-group">
+              <label>Merchant Password</label>
+              <input type="password" class="form-input" placeholder="Merchant API password" id="epPassword">
+            </div>
+            <div class="form-group">
+              <label>Hash Key (for HMAC)</label>
+              <input type="text" class="form-input" placeholder="HMAC hash key" id="epHashKey">
+            </div>
+            <div class="form-group">
+              <label>Mode</label>
+              <select class="form-input" id="epMode" style="width:auto;">
+                <option value="sandbox">Sandbox (Testing)</option>
+                <option value="production">Production (Live)</option>
+              </select>
+            </div>
+            <button class="btn btn-primary" onclick="showToast('Easypaisa settings saved!','success')">
+              <i class="fas fa-save"></i> Save Easypaisa Config
+            </button>
+            <div style="margin-top:16px;padding:12px;background:#fff3e0;border-radius:var(--radius-sm);font-size:12px;color:#e65100;">
+              <i class="fas fa-exclamation-triangle"></i>
+              <strong>Important:</strong> In production, API credentials should be stored as server-side environment variables (Cloudflare secrets), never in frontend code.
+              Use <code>wrangler secret put EASYPAISA_STORE_ID</code> to securely store them.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ADD/EDIT VEGETABLE MODAL ============ -->
+  <div class="modal-overlay" id="vegModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="vegModalTitle"><i class="fas fa-plus-circle text-primary"></i> Add Vegetable</h3>
+        <button class="modal-close" onclick="closeVegModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="vegEditId">
+        <div class="form-group">
+          <label>Name <span class="required">*</span></label>
+          <input type="text" class="form-input" id="vegName" placeholder="e.g. Tamatar (Tomato)">
+        </div>
+        <div class="form-group">
+          <label>Urdu Name</label>
+          <input type="text" class="form-input" id="vegNameUrdu" placeholder="e.g. ٹماٹر">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          <div class="form-group">
+            <label>Category <span class="required">*</span></label>
+            <select class="form-input" id="vegCategory">
+              <option value="leafy">Leafy Greens</option>
+              <option value="root">Root Vegetables</option>
+              <option value="fruit">Fruit Vegetables</option>
+              <option value="exotic">Exotic / Imported</option>
+              <option value="herbs">Fresh Herbs</option>
+              <option value="seasonal">Seasonal</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Unit</label>
+            <select class="form-input" id="vegUnit">
+              <option value="kg">Per kg</option>
+              <option value="bunch">Per bunch</option>
+              <option value="piece">Per piece</option>
+              <option value="250g">Per 250g</option>
+              <option value="500g">Per 500g</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Price (Rs.) <span class="required">*</span></label>
+          <input type="number" class="form-input" id="vegPrice" placeholder="0" min="1">
+        </div>
+        <div class="form-group">
+          <label>Image URL</label>
+          <input type="url" class="form-input" id="vegImage" placeholder="https://example.com/image.jpg">
+          <span class="form-hint">Use a direct image URL. Recommended size: 400x400px</span>
+        </div>
+        <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+          <label style="margin-bottom:0;">In Stock</label>
+          <label class="toggle-switch">
+            <input type="checkbox" id="vegInStock" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button class="btn btn-outline" onclick="closeVegModal()" style="flex:1;">Cancel</button>
+          <button class="btn btn-primary" onclick="saveVegetable()" style="flex:2;">
+            <i class="fas fa-save"></i> <span id="vegSaveBtn">Add Vegetable</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ORDER DETAIL MODAL ============ -->
+  <div class="modal-overlay" id="orderModal">
+    <div class="modal" style="max-width:600px;">
+      <div class="modal-header">
+        <h3><i class="fas fa-box text-primary"></i> Order Details</h3>
+        <button class="modal-close" onclick="closeOrderModal()"><i class="fas fa-times"></i></button>
+      </div>
+      <div class="modal-body" id="orderDetailContent">
+        <!-- Populated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/admin.js"></script>
+</body>
+</html>

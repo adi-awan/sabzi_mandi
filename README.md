@@ -6,11 +6,6 @@
 - **Stack**: Hono + TypeScript + Supabase + JWT + Zod (Cloudflare Pages)
 - **Version**: 2.0.0
 
-## Live URLs
-- **Store**: https://3000-sandbox-url.pages.dev (or your Cloudflare deployment)
-- **Admin**: https://3000-sandbox-url.pages.dev/admin
-- **API Health**: https://3000-sandbox-url.pages.dev/api/health
-
 ---
 
 ## Features
@@ -31,9 +26,6 @@
 - **Input Validation**: Zod schemas on all endpoints
 - **Offline Fallback**: Frontend works with localStorage when API unavailable
 
-### Admin Credentials
-- **Username**: `admin`
-- **Password**: `admin123`
 
 ---
 
@@ -227,65 +219,7 @@ Content-Type: application/json
 }
 ```
 
----
 
-## JWT Middleware Code
-
-```typescript
-// Authentication middleware - src/middleware/auth.ts
-import { SignJWT, jwtVerify } from 'jose'
-
-export function authMiddleware() {
-  return async (c, next) => {
-    const authHeader = c.req.header('Authorization')
-    if (!authHeader?.startsWith('Bearer ')) {
-      return c.json({ error: 'Authentication required' }, 401)
-    }
-    const token = authHeader.split(' ')[1]
-    const payload = await verifyToken(token, c.env.JWT_SECRET)
-    if (!payload) return c.json({ error: 'Invalid token' }, 401)
-    c.set('user', payload)
-    await next()
-  }
-}
-```
-
----
-
-## WhatsApp Link Generator
-
-```javascript
-// Generates: https://wa.me/923001234567?text=NEW ORDER...
-generateWhatsAppOrderLink({
-  orderId: 'SM12345678',
-  customerName: 'Ahmed',
-  customerPhone: '03001234567',
-  deliveryAddress: 'Gulshan, Karachi',
-  items: [{ name: 'Tomato', quantity: 2, unit: 'kg', price: 180 }],
-  totalAmount: 510,
-  deliveryCharges: 150,
-  paymentMethod: 'cod'
-}, '923001234567')
-```
-
----
-
-## Easypaisa Integration Guide
-
-### Manual Flow (Current Implementation)
-1. Store owner's account name/number displayed at checkout
-2. Customer sends payment via Easypaisa app
-3. Customer uploads screenshot to `/api/orders/:id/screenshot`
-4. Admin verifies screenshot in order detail view
-
-### API Flow (Production)
-1. Set secrets: `wrangler secret put EASYPAISA_STORE_ID` etc.
-2. Backend calls Easypaisa API at `/easypay-service/rest/v4/initiate-ma-transaction`
-3. Generates HMAC-SHA256 signature using hash key
-4. Webhook at `/api/easypaisa/callback` receives payment confirmation
-5. Order payment_status auto-updated to 'paid' on success
-
----
 
 ## Setup & Deployment
 
@@ -370,4 +304,4 @@ npm run deploy
 
 ---
 
-*Last Updated: 2026-03-04*
+*Last Updated: 2026-03-05*
